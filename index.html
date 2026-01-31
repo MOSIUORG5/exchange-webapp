@@ -2,66 +2,260 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Exchange</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Professional Exchange</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; background-color: var(--tg-theme-bg-color, #fff); color: var(--tg-theme-text-color, #000); padding: 15px; }
-        .container { max-width: 400px; margin: 0 auto; }
-        label { font-weight: bold; display: block; margin-top: 15px; margin-bottom: 5px; font-size: 14px; color: var(--tg-theme-hint-color, #888); }
-        select, input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--tg-theme-hint-color, #ccc); background-color: var(--tg-theme-secondary-bg-color, #f5f5f5); color: var(--tg-theme-text-color, #000); box-sizing: border-box; font-size: 16px; outline: none; }
-        .btn { width: 100%; padding: 16px; background-color: var(--tg-theme-button-color, #3390ec); color: var(--tg-theme-button-text-color, #fff); border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: opacity 0.2s; }
-        .btn:active { opacity: 0.8; }
-        h2 { text-align: center; margin-bottom: 20px; }
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --input-bg: #21262d;
+            --text-primary: #ffffff;
+            --text-secondary: #8b949e;
+            --accent: #2f81f7;
+            --accent-hover: #58a6ff;
+            --border: #30363d;
+            --danger: #f85149;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            background: rgba(46, 160, 67, 0.15);
+            color: #3fb950;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .swap-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="number"] {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            font-weight: 600;
+            width: 100%;
+            outline: none;
+            padding: 0;
+        }
+
+        input::placeholder { color: #484f58; }
+
+        select {
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            appearance: none; /* Remove default arrow */
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .network-select {
+            font-size: 11px;
+            padding: 4px 8px;
+            margin-top: 5px;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            color: var(--text-secondary);
+            width: auto;
+            display: inline-block;
+        }
+
+        .divider {
+            display: flex;
+            justify-content: center;
+            margin: -18px 0;
+            z-index: 10;
+            position: relative;
+        }
+
+        .swap-icon {
+            background-color: var(--input-bg);
+            border: 4px solid var(--bg-color);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        .btn-main {
+            width: 100%;
+            background: linear-gradient(90deg, var(--accent), #1f6feb);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(31, 111, 235, 0.3);
+            transition: transform 0.1s;
+        }
+
+        .btn-main:active { transform: scale(0.98); }
+
+        /* Custom Dropdown styling fix */
+        option { background: var(--input-bg); }
+
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h2>💱 Quick Swap</h2>
-
-        <label>PAY WITH (Send):</label>
-        <div style="display:flex; gap:10px;">
-            <select id="depCoin" style="flex:1">
-                <option value="USDT">USDT</option>
-                <option value="BTC">Bitcoin</option>
-                <option value="ETH">Ethereum</option>
-                <option value="LTC">Litecoin</option>
-                <option value="XMR">Monero</option>
-            </select>
-            <select id="depNet" style="flex:1">
-                <option value="trc20">TRC20</option>
-                <option value="erc20">ERC20</option>
-                <option value="arbitrum">Arbitrum</option>
-                <option value="bitcoin">Bitcoin</option>
-                <option value="mainnet">Mainnet</option>
-            </select>
+        <div class="header">
+            <h2>Swap</h2>
+            <span class="status-badge">● Live Rates</span>
         </div>
 
-        <label>AMOUNT:</label>
-        <input type="number" id="amount" placeholder="0.0" step="any">
-
-        <label>RECEIVE (Get):</label>
-        <div style="display:flex; gap:10px;">
-            <select id="setCoin" style="flex:1">
-                <option value="BTC">Bitcoin</option>
-                <option value="USDT">USDT</option>
-                <option value="ETH">Ethereum</option>
-                <option value="XMR">Monero</option>
-            </select>
-            <select id="setNet" style="flex:1">
-                <option value="bitcoin">Bitcoin</option>
-                <option value="trc20">TRC20</option>
-                <option value="erc20">ERC20</option>
-                <option value="mainnet">Mainnet</option>
-            </select>
+        <div class="swap-card">
+            <span class="label">You Pay</span>
+            <div class="input-group">
+                <input type="number" id="amount" placeholder="0.0" inputmode="decimal">
+                <select id="depCoin" onchange="updateNetworks('dep')"></select>
+            </div>
+            <select id="depNet" class="network-select"></select>
         </div>
 
-        <button class="btn" onclick="sendData()">CONTINUE</button>
+        <div class="divider">
+            <div class="swap-icon">⬇</div>
+        </div>
+
+        <div class="swap-card" style="margin-top: 10px;">
+            <span class="label">You Receive</span>
+            <div class="input-group">
+                <input type="text" id="receiveAmount" placeholder="~" disabled style="color: var(--text-secondary);">
+                <select id="setCoin" onchange="updateNetworks('set')"></select>
+            </div>
+            <select id="setNet" class="network-select"></select>
+        </div>
+
+        <button class="btn-main" onclick="sendData()">Review Order</button>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
+        tg.MainButton.hide();
+
+        // لیست حرفه‌ای کوین‌ها و شبکه‌های ساپورت شده
+        // این لیست بر اساس دیتای SideShift تنظیم شده است
+        const coins = {
+            "USDT": { name: "Tether", nets: ["trc20", "erc20", "bep20", "arbitrum", "polygon", "solana"] },
+            "BTC": { name: "Bitcoin", nets: ["bitcoin", "lightning"] },
+            "ETH": { name: "Ethereum", nets: ["mainnet", "arbitrum", "optimism", "base"] },
+            "TON": { name: "Toncoin", nets: ["ton"] },
+            "SOL": { name: "Solana", nets: ["mainnet"] },
+            "TRX": { name: "Tron", nets: ["mainnet"] },
+            "XRP": { name: "Ripple", nets: ["mainnet"] },
+            "LTC": { name: "Litecoin", nets: ["mainnet"] },
+            "DOGE": { name: "Dogecoin", nets: ["mainnet"] },
+            "BNB": { name: "BNB", nets: ["bsc"] },
+            "XMR": { name: "Monero", nets: ["mainnet"] },
+            "USDC": { name: "USDC", nets: ["erc20", "solana", "arbitrum", "polygon"] },
+            "BCH": { name: "Bitcoin Cash", nets: ["mainnet"] },
+            "ADA": { name: "Cardano", nets: ["mainnet"] },
+            "AVAX": { name: "Avalanche", nets: ["c-chain"] },
+            "DOT": { name: "Polkadot", nets: ["mainnet"] },
+            "MATIC": { name: "Polygon", nets: ["mainnet"] },
+            "DAI": { name: "Dai", nets: ["erc20"] }
+        };
+
+        // Initialize Dropdowns
+        function init() {
+            const depSel = document.getElementById('depCoin');
+            const setSel = document.getElementById('setCoin');
+
+            for (let symbol in coins) {
+                let option = `<option value="${symbol}">${symbol}</option>`;
+                depSel.innerHTML += option;
+                setSel.innerHTML += option;
+            }
+
+            // Set defaults
+            depSel.value = "USDT";
+            setSel.value = "BTC"; // Default target
+            
+            updateNetworks('dep');
+            updateNetworks('set');
+        }
+
+        // Update Network Dropdown based on selected Coin
+        function updateNetworks(type) {
+            const coinKey = document.getElementById(type + 'Coin').value;
+            const netSel = document.getElementById(type + 'Net');
+            const availableNets = coins[coinKey].nets;
+
+            netSel.innerHTML = "";
+            availableNets.forEach(net => {
+                let displayNet = net.toUpperCase();
+                if(net === 'mainnet') displayNet = coinKey + ' Network'; // e.g. BTC Network
+                if(net === 'bsc') displayNet = 'BEP20 (BSC)';
+                netSel.innerHTML += `<option value="${net}">${displayNet}</option>`;
+            });
+        }
 
         function sendData() {
             let depCoin = document.getElementById("depCoin").value;
@@ -70,14 +264,26 @@
             let setNet = document.getElementById("setNet").value;
             let amount = document.getElementById("amount").value;
 
-            if(!amount || amount <= 0) {
-                tg.showAlert("Please enter a valid amount!");
+            if(!amount || parseFloat(amount) <= 0) {
+                tg.showAlert("⚠️ Please enter a valid amount.");
                 return;
             }
 
-            let data = { depCoin, depNet, setCoin, setNet, amount };
+            // Data sent to Python Bot
+            let data = {
+                depCoin: depCoin,
+                depNet: depNet,
+                setCoin: setCoin,
+                setNet: setNet,
+                amount: amount
+            };
+
             tg.sendData(JSON.stringify(data));
         }
+
+        // Run Init
+        init();
+
     </script>
 </body>
 </html>
